@@ -3,7 +3,12 @@ const STORAGE_KEY = "french-plate-bingo";
 let foundCodes = new Set();
 let lastAddedCode = null;
 let map = null;
-let marker = null;
+let markerLayer = null;
+
+const MARKER_COLORS = {
+  current: "#0055a4",
+  found: "#1f8a4c",
+};
 
 const inputEl = document.getElementById("dept-input");
 const formEl = document.getElementById("entry-form");
@@ -98,6 +103,32 @@ function ensureMap() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
     maxZoom: 18,
   }).addTo(map);
+  markerLayer = L.layerGroup().addTo(map);
+}
+
+function createDeptMarker(dept, isCurrent) {
+  const radius = isCurrent ? 9 : 6;
+  const marker = L.circleMarker([dept.lat, dept.lng], {
+    radius,
+    fillColor: isCurrent ? MARKER_COLORS.current : MARKER_COLORS.found,
+    color: "#ffffff",
+    weight: 2,
+    fillOpacity: 0.95,
+  });
+  marker.bindTooltip(`${dept.code} — ${dept.name}`, { direction: "top", offset: [0, -8] });
+  return marker;
+}
+
+function renderMapMarkers(focusDept) {
+  if (!map) return;
+  markerLayer.clearLayers();
+
+  for (const code of foundCodes) {
+    const dept = DEPARTMENT_BY_CODE[code];
+    if (!dept) continue;
+    const isCurrent = code === (focusDept?.code ?? lastAddedCode);
+    createDeptMarker(dept, isCurrent).addTo(markerLayer);
+  }
 }
 
 function showDepartmentOnMap(dept) {
@@ -106,10 +137,10 @@ function showDepartmentOnMap(dept) {
   resultCodeEl.textContent = dept.code;
   resultNameEl.textContent = dept.name;
 
+  renderMapMarkers(dept);
+
   const zoom = dept.code.length > 2 ? 8 : 7;
   map.setView([dept.lat, dept.lng], zoom);
-  if (marker) marker.remove();
-  marker = L.marker([dept.lat, dept.lng]).addTo(map);
   setTimeout(() => map.invalidateSize(), 100);
 }
 
@@ -190,6 +221,12 @@ function importFromFile(file) {
     foundCodes = imported;
     saveState();
     renderAll();
+    if (foundCodes.size > 0) {
+      ensureMap();
+      resultPanelEl.classList.remove("hidden");
+      renderMapMarkers();
+      map.setView([46.6, 2.4], 5);
+    }
     setMessage(
       added > 0
         ? `${added} neue Département(s) importiert.`
@@ -206,6 +243,7 @@ function resetGame() {
   lastAddedCode = null;
   localStorage.removeItem(STORAGE_KEY);
   resultPanelEl.classList.add("hidden");
+  if (markerLayer) markerLayer.clearLayers();
   renderAll();
   setMessage("Spiel zurückgesetzt.", "info");
 }
