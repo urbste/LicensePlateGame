@@ -106,21 +106,30 @@ function ensureMap() {
   markerLayer = L.layerGroup().addTo(map);
 }
 
-function createDeptMarker(dept, isCurrent) {
-  const radius = isCurrent ? 9 : 6;
-  const marker = L.circleMarker([dept.lat, dept.lng], {
-    radius,
-    fillColor: isCurrent ? MARKER_COLORS.current : MARKER_COLORS.found,
-    color: "#ffffff",
-    weight: 2,
-    fillOpacity: 0.95,
+function refreshMapSize() {
+  if (!map) return;
+  requestAnimationFrame(() => {
+    map.invalidateSize();
+    setTimeout(() => map.invalidateSize(), 150);
   });
-  marker.bindTooltip(`${dept.code} — ${dept.name}`, { direction: "top", offset: [0, -8] });
+}
+
+function createDeptMarker(dept, isCurrent) {
+  const color = isCurrent ? MARKER_COLORS.current : MARKER_COLORS.found;
+  const size = isCurrent ? 30 : 24;
+  const icon = L.divIcon({
+    className: "",
+    html: `<div class="map-pin${isCurrent ? " map-pin-current" : ""}" style="background:${color}"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+  const marker = L.marker([dept.lat, dept.lng], { icon });
+  marker.bindTooltip(`${dept.code} — ${dept.name}`, { direction: "top", offset: [0, -10] });
   return marker;
 }
 
 function renderMapMarkers(focusDept) {
-  if (!map) return;
+  if (!map || !markerLayer) return;
   markerLayer.clearLayers();
 
   for (const code of foundCodes) {
@@ -131,17 +140,33 @@ function renderMapMarkers(focusDept) {
   }
 }
 
-function showDepartmentOnMap(dept) {
+function showMapOverview() {
+  if (foundCodes.size === 0) return;
+  resultPanelEl.classList.remove("hidden");
+  if (lastAddedCode && DEPARTMENT_BY_CODE[lastAddedCode]) {
+    const dept = DEPARTMENT_BY_CODE[lastAddedCode];
+    resultCodeEl.textContent = dept.code;
+    resultNameEl.textContent = dept.name;
+  } else {
+    resultCodeEl.textContent = "Karte";
+    resultNameEl.textContent = `${foundCodes.size} Départements gefunden`;
+  }
   ensureMap();
+  renderMapMarkers();
+  map.setView([46.6, 2.4], 5);
+  refreshMapSize();
+}
+
+function showDepartmentOnMap(dept) {
   resultPanelEl.classList.remove("hidden");
   resultCodeEl.textContent = dept.code;
   resultNameEl.textContent = dept.name;
-
+  ensureMap();
   renderMapMarkers(dept);
 
   const zoom = dept.code.length > 2 ? 8 : 7;
   map.setView([dept.lat, dept.lng], zoom);
-  setTimeout(() => map.invalidateSize(), 100);
+  refreshMapSize();
 }
 
 function addDepartment(rawInput) {
@@ -221,12 +246,7 @@ function importFromFile(file) {
     foundCodes = imported;
     saveState();
     renderAll();
-    if (foundCodes.size > 0) {
-      ensureMap();
-      resultPanelEl.classList.remove("hidden");
-      renderMapMarkers();
-      map.setView([46.6, 2.4], 5);
-    }
+    if (foundCodes.size > 0) showMapOverview();
     setMessage(
       added > 0
         ? `${added} neue Département(s) importiert.`
@@ -269,3 +289,4 @@ resetBtn.addEventListener("click", resetGame);
 loadState();
 renderAll();
 totalCountEl.textContent = String(DEPARTMENTS.length);
+showMapOverview();

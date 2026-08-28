@@ -197,6 +197,21 @@ button.danger {
   background: var(--found);
 }
 
+.map-pin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.map-pin-current {
+  width: 22px;
+  height: 22px;
+  border-width: 3px;
+  box-shadow: 0 0 0 3px rgba(0, 85, 164, 0.25), 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
 .toolbar {
   display: flex;
   gap: 0.5rem;
