@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plaque Bingo France</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>🇫🇷 Plaque Bingo France</h1>
+      <p>Nummer vom Kennzeichen eingeben — sammle alle Départements im Urlaub!</p>
+    </header>
+
+    <main>
+      <section class="card span-full">
+        <form id="entry-form" class="entry-row">
+          <input
+            id="dept-input"
+            type="text"
+            inputmode="text"
+            placeholder="z.B. 22, 75, 2A, 971"
+            autocomplete="off"
+            maxlength="3"
+            aria-label="Département-Nummer"
+          />
+          <button type="submit">Eintragen</button>
+        </form>
+        <div id="message" class="message" aria-live="polite"></div>
+        <div class="stats">
+          <span>Gefunden: <strong id="found-count">0</strong> / <strong id="total-count">0</strong></span>
+        </div>
+      </section>
+
+      <section id="result-panel" class="card result-panel hidden">
+        <div class="result-header">
+          <span id="result-code" class="result-code"></span>
+          <span id="result-name" class="result-name"></span>
+        </div>
+        <div id="map" role="img" aria-label="Karte des Départements"></div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">Deine Liste</h2>
+        <div class="toolbar" style="margin-bottom: 0.75rem">
+          <button type="button" id="export-btn" class="secondary">Als Textdatei speichern</button>
+          <button type="button" id="import-btn" class="secondary">Importieren</button>
+          <button type="button" id="reset-btn" class="danger">Zurücksetzen</button>
+          <input id="import-file" type="file" accept=".txt,.csv,text/plain" hidden />
+        </div>
+        <div id="found-list" class="found-list"></div>
+      </section>
+
+      <section class="card span-full">
+        <h2 class="section-title">Bingo-Übersicht</h2>
+        <div id="bingo-grid" class="bingo-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      Daten werden lokal im Browser gespeichert. Ideal für Handys unterwegs.
+    </footer>
+
+    <script src="data/departments.js"></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
