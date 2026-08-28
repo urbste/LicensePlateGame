@@ -1,0 +1,255 @@
+:root {
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #1a2332;
+  --muted: #5c6b7f;
+  --accent: #0055a4;
+  --accent-light: #e8f1fb;
+  --found: #1f8a4c;
+  --found-bg: #e6f6ec;
+  --border: #d8e0ea;
+  --shadow: 0 8px 24px rgba(26, 35, 50, 0.08);
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: linear-gradient(160deg, #eef4ff 0%, var(--bg) 45%, #fff8ef 100%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+
+header h1 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+}
+
+header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.entry-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.entry-row input {
+  flex: 1 1 140px;
+  min-width: 0;
+  font-size: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+}
+
+.entry-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+button {
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.1rem;
+  cursor: pointer;
+  background: var(--accent);
+  color: white;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
+
+button.secondary {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+button.danger {
+  background: #fde8e8;
+  color: #b42318;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.stats strong {
+  color: var(--text);
+}
+
+.message {
+  margin-top: 0.75rem;
+  min-height: 1.4rem;
+  font-weight: 600;
+}
+
+.message.success {
+  color: var(--found);
+}
+
+.message.info {
+  color: var(--accent);
+}
+
+.message.error {
+  color: #b42318;
+}
+
+.result-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.result-panel.hidden {
+  display: none;
+}
+
+.result-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.result-code {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.result-name {
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+#map {
+  height: 220px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.found-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}
+
+.found-chip {
+  background: var(--found-bg);
+  color: var(--found);
+  border: 1px solid #b8e6c8;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.found-chip small {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.empty-hint {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.bingo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 0.45rem;
+}
+
+.dept-tile {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.25rem;
+  text-align: center;
+  background: #f8fafc;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  transition: transform 0.15s, background 0.15s, color 0.15s;
+}
+
+.dept-tile .code {
+  display: block;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.dept-tile.found {
+  background: var(--found-bg);
+  border-color: #9ed9b3;
+  color: var(--found);
+  transform: scale(1.02);
+}
+
+.dept-tile.recent {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0 1rem 2rem;
+}
+
+@media (min-width: 800px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .span-full {
+    grid-column: 1 / -1;
+  }
+}
